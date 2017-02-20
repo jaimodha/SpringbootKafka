@@ -1,7 +1,11 @@
 package com.transcendinsights.config
 
+import com.transcendinsights.Model.KafkaModel
+import groovy.json.JsonSlurper
+
 /**
- * Created by jaimodha on 2/19/17.
+ * @author Jai Modha
+ * @since 02-17-2017
  */
 import java.util.concurrent.CountDownLatch;
 
@@ -16,9 +20,13 @@ public class Receiver {
 
     private CountDownLatch latch = new CountDownLatch(1);
 
-    @KafkaListener(topics = "topic1")
+    @KafkaListener(topics = "test")
     public void receiveMessage(String message) {
         LOGGER.info("received message='{}'", message);
+        KafkaModel response = new JsonSlurper().parseText(message) as KafkaModel
+        LOGGER.info("Id: $response.id")
+        LOGGER.info("name: $response.name")
+        LOGGER.info("${response.getClass()}")
         latch.countDown();
     }
 

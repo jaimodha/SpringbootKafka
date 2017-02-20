@@ -38,7 +38,7 @@ class SenderConfigs {
   }
 
   @Bean
-  ProducerFactory<String, String> producerFactory() {
+  ProducerFactory producerFactory() {
     new DefaultKafkaProducerFactory<>(producerConfigs())
   }
 

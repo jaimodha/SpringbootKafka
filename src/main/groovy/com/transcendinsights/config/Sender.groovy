@@ -1,7 +1,8 @@
 package com.transcendinsights.config
 
 /**
- * Created by jaimodha on 2/19/17.
+ * @author Jai Modha
+ * @since 02-17-2017s
  */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
