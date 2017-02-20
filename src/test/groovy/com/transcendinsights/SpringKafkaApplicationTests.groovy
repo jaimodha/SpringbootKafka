@@ -1,44 +1,33 @@
 package com.transcendinsights
 
-import com.transcendinsights.config.Listener
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.support.SendResult
-import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.util.concurrent.ListenableFuture
-import org.springframework.util.concurrent.ListenableFutureCallback
+import com.transcendinsights.config.Receiver
+import com.transcendinsights.config.Sender
 
-@RunWith(SpringRunner)
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+@RunWith(SpringRunner.class)
 @SpringBootTest
-class SpringKafkaApplicationTests {
+public class SpringKafkaApplicationTests {
 
 	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
+	private Sender sender;
 
 	@Autowired
-	private Listener listener;
+	private Receiver receiver;
 
 	@Test
-	void contextLoads()  throws InterruptedException {
+	public void testReceiver() throws Exception {
+		sender.sendMessage("topic1", "Hello Spring Kafka!");
 
-		ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send("topic1", "ABC");
-		future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
-
-			@Override
-			void onFailure(Throwable ex) {
-				println('Success')
-			}
-
-			@Override
-			void onSuccess(SendResult<String, String> result) {
-				println('Failure')
-			}
-		})
-		println(Thread.currentThread().id)
-		//assert(this.listener.countDownLatch.await(60, TimeUnit.SECONDS)).isTrue();
-		assert 1 == 1
+		receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
+		assertThat(receiver.getLatch().getCount()).isEqualTo(0);
 	}
 }
